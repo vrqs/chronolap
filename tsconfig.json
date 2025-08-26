@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",                 // modern JS output
+    "module": "ESNext",                 // Vite uses ES modules
+    "moduleResolution": "Node",         // resolve imports like Node
+    "strict": true,                     // enable strict type checking
+    "esModuleInterop": true,            // support default imports from CommonJS
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,          // allow importing JSON
+    "skipLibCheck": true,               // skip type checking of external libs
+    "baseUrl": "./src",                  // optional, allows absolute imports from src
+    "types": ["vite/client"]
+  },
+  "include": ["src/**/*.ts"],           // include all TS files in src
+  "exclude": ["node_modules", "dist"]   // exclude build output and dependencies
+}

@@ -1,0 +1,37 @@
+/**
+ * Abstracts
+ * Variables.scss
+ */
+
+$assets: "/src/assets/";
+
+$font-primary: "Satoshi";
+$font-secondary: "Bevellier";
+
+$container-col-width: 80px;
+$container-col-gap: 20px;
+$container-col-count: 12;
+
+$container-width: calc(
+  calc($container-col-width * $container-col-count)
+  + calc($container-col-gap * calc($container-col-count - 1))
+); // 1180px
+
+$container-8-width: calc(
+  calc($container-col-width * 8)
+  + calc($container-col-gap * 7)
+); // 780px
+
+$container-6-width: calc(
+  calc($container-col-width * 6)
+  + calc($container-col-gap * 5)
+); // 580px
+
+$breakpoints: (
+  xs: 360px,
+  sm: 480px,
+  md: 768px,
+  lg: 1024px,
+  xl: 1280px,
+  xxl: 1440px
+);

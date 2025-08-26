@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chronolap – Find overlapping working hours across timezones</title>
+  </head>
+
+  <body>
+    <header class="site-header">
+      <div class="container grid">
+        <img src="/src/assets/logo.svg" alt="Chronolap – Find overlapping working hours across timezones">
+
+        <h1 class="heading-3">Find overlapping working hours across timezones</h1>
+
+        <button class="button-secondary -info">About this</button>
+      </div>
+    </header>
+    
+    <main>
+      <section class="user-input">
+        <div class="container flex col-center">
+          <header>
+            <h2 class="section-title heading-4">Select your locations and timeframe</h2>
+          </header>
+
+          <div class="card-input">
+            <div class="input-group">
+              <p class="label body-regular -bold">Between</p>
+              
+              <div class="fields flex">
+                <span data-state="filled" id="field-country" class="field heading-2">Portugal</span>
+                <span data-state="filled" id="field-zone" class="field heading-2">Lisbon</span>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <p class="label body-regular -bold">And</p>
+              
+              <div class="fields flex">
+                <span data-state="empty" class="field heading-2">Select location</span>
+              </div>
+            </div>
+
+            <div class="input-group flex align-center space-between" id="group-timeframe">
+              <input type="checkbox" name="timeframe" id="timeframe" checked hidden>
+              <label for="timeframe" class="label body-regular -bold">Timeframe</label>
+              
+              <div class="fields flex align-baseline">
+                <span class="field heading-3">9:00AM</span>
+                <span class="divider body-regular -bold">to</span>
+                <span class="field heading-3">7:00PM</span>
+              </div>
+            </div>
+          </div>
+
+          <footer>
+            <button type="button" class="button-primary -search">Find Overlap</button>
+          </footer>
+        </div>
+      </section>
+    </main>
+
+    <div class="background"></div>
+  </body>
+  <script type="module" src="/src/js/main.js"></script>
+</html>

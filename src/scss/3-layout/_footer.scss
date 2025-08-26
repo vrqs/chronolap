@@ -1,0 +1,25 @@
+/**
+ * Layout
+ * Footer.scss
+ */
+
+@use "../0-abstracts/" as *;
+
+footer.site-footer {
+  @include padding(y, 80);
+
+  .container {
+    @include flex($justify: center);
+  }
+
+  p {
+    position: relative;
+
+    @include pseudo("after") {
+      @include wh(calc(100% + 22px), 24);
+      background: url("../images/texture.png") var(--color-background-site);
+      background-size: contain;
+      @include pos(0, $l: -10px, $z: -1);
+    }
+  }
+}

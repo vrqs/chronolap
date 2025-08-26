@@ -1,0 +1,28 @@
+/**
+ * Layout
+ * Container.scss
+ */
+
+@use "../0-abstracts/" as *;
+
+.container {
+  @include wh(
+    100%,
+    $max-w: $container-width,
+  );
+  
+  @include padding(x, 16);
+  margin: auto;
+
+  &.container-8 {
+    max-width: $container-8-width;
+  }
+
+  &.container-6 {
+    max-width: $container-6-width;
+  }
+
+  &.container-post-content {
+    @include padding(x, 56);
+  }
+}

@@ -1,0 +1,30 @@
+/**
+ * Base
+ * Typography.scss
+ */
+
+@use "../0-abstracts/" as *;
+
+.heading {
+  &-2 {
+    @include font(2rem, 2rem, -2%, 650);
+  }
+
+  &-3 {
+    @include font(1.5rem, 2rem, -2%, 700);
+  }
+
+  &-4 {
+    @include font(1.25rem, 1.5rem, -.5%, 700);
+  }
+}
+
+.body {
+  &-regular {
+    @include font(1rem, 1.25rem, 0%, 450);
+
+    &.-bold {
+      font-weight: 650;
+    }
+  }
+}

@@ -1,0 +1,393 @@
+/**
+ * Abstracts
+ * Mixins.scss
+ */
+
+@use "sass:map";
+@use "sass:meta";
+@use 'sass:list';
+@use "variables" as *;
+@use "functions" as *;
+
+/**
+  * Helper to generate property if any value exists
+  */
+@mixin if-exists($property, $value, $unit: px, $normalize: true) {
+  @if ($value != null) {
+    #{$property}: if($normalize, normalize-unit($value), $value);
+  }
+}
+
+/**
+  * Generates CSS variables with a given color theme map
+  */
+@mixin generate-color-theme($theme-map) {
+  @each $main, $variant-map in $theme-map {
+    @each $variant, $value in $variant-map {
+      --color-#{$main}-#{$variant}: #{$value};
+    }
+  }
+}
+
+/**
+  * Sets multiple font related properties
+  */
+@mixin font(
+    $size,
+    $line-height: null,
+    $letter-spacing: null,
+    $weight: null,
+    $color: null,
+    $family: null,
+    $trans: null,
+    $width: null,
+    $os: null,
+    $unit: px
+) {
+  @include if-exists(font-size, $size, $unit);
+  @include if-exists(line-height, $line-height, $unit);
+  @include if-exists(letter-spacing, $letter-spacing, $unit);
+  @include if-exists(font-weight, $weight, null, null);
+  @include if-exists(color, $color, null);
+  @include if-exists(font-family, $family, null);
+  @include if-exists(text-transform, $trans, null, null);
+  @include if-exists(font-stretch, $width);
+  @include if-exists(font-variation-settings, "opsz" $os, null, null);
+}
+
+/**
+  * Helper to set width/height related properties
+  */
+@mixin wh(
+  $w: null,
+  $h: null,
+  $max-w: null,
+  $max-h: null,
+  $min-w: null,
+  $min-h: null,
+  $unit: px
+) {
+  @include if-exists(width, $w, $unit);
+  @include if-exists(height, $h, $unit);
+  @include if-exists(max-width, $max-w, $unit);
+  @include if-exists(max-height, $max-h, $unit);
+  @include if-exists(min-width, $min-w, $unit);
+  @include if-exists(min-height, $min-h, $unit);
+}
+
+/**
+  * Sets padding/margin properties per axis or all sides
+  * Accepts a list as value for different axis values
+  * Ex: space(padding (10, 20))
+  */
+@mixin space(
+  $type: null,
+  $direction,
+  $value,
+  $unit: px
+) {
+  $value-1: if(
+    meta.type-of($value) == "list",
+    normalize-unit(list.nth($value, 1), $unit),
+    normalize-unit($value, $unit)
+  );
+
+  // Defaults to $value-1 if $direction is a list with a single value
+  $value-2: if(
+    meta.type-of($value) == "list" and list.length($value) > 1,
+    normalize-unit(list.nth($value, 2), $unit),
+    $value-1
+  );
+
+  @if $direction == x {
+    #{$type}-left: $value-1;
+    #{$type}-right: $value-2;
+  }
+  @else if $direction == y {
+    #{$type}-top: $value-1;
+    #{$type}-bottom: $value-2;
+  }
+  @else if $direction == all {
+    @if $value-2 != $value-1 {
+      #{$type}: $value-1 $value-2;
+    } @else {
+      #{$type}: $value-1;
+    }
+  }
+  @else {
+    #{$type}-#{$direction}: $value-1;
+  }
+}
+
+/**
+  * Sets padding properties per axis or all sides
+  * Uses @mixin space
+  */
+@mixin padding(
+  $direction,
+  $value,
+  $unit: px
+) {
+  @include space(padding, $direction, $value, $unit);
+}
+
+/**
+  * Sets margin properties per axis or all sides
+  * Uses @mixin space
+  */
+@mixin margin(
+  $direction,
+  $value,
+  $unit: px
+) {
+  @include space(margin, $direction, $value, $unit);
+}
+
+/**
+  * Sets position related properties
+  */
+@mixin pos(
+  $t: null,
+  $r: null,
+  $b: null,
+  $l: null,
+  $inset: null,
+  $pos: absolute,
+  $z: null,
+  $unit: px
+) {
+  @include if-exists(position, $pos, $unit);
+  @include if-exists(inset, $inset, $unit);
+  @include if-exists(z-index, $z, null, null);
+  @include if-exists(top, $t, $unit);
+  @include if-exists(right, $r, $unit);
+  @include if-exists(bottom, $b, $unit);
+  @include if-exists(left, $l, $unit);
+}
+
+/**
+  * Helper to set flexbox related properties
+  */
+@mixin flex(
+  $direction: null,
+  $align: null,
+  $justify: null,
+  $gap: null,
+  $wrap: null,
+  $dis: true
+) {
+  @if $dis {
+    display: flex;
+  }
+  
+  @include if-exists(justify-content, $justify, null);
+  @include if-exists(align-items, $align, null);
+  @include if-exists(gap, $gap, null);
+  @include if-exists(flex-direction, $direction, null);
+  @include if-exists(flex-wrap, $wrap, null);
+}
+
+/**
+  * Helper to set grid related properties
+  */
+@mixin grid(
+  $cols: null,
+  $rows: null,
+  $gap: null,
+  $col-gap: null,
+  $row-gap: null,
+  $justify: null,
+  $justify-items: null,
+  $align-items: null,
+  $dis: grid
+) {
+  @include if-exists(display, $dis, null);
+  @include if-exists(grid-template-columns, $cols, null);
+  @include if-exists(grid-template-rows, $rows, null);
+  @include if-exists(gap, $gap, null);
+  @include if-exists(column-gap, $col-gap, null);
+  @include if-exists(row-gap, $row-gap, null);
+  @include if-exists(justify-content, $justify, null);
+  @include if-exists(justify-items, $justify-items, null);
+  @include if-exists(align-items, $align-items, null);
+}
+
+/**
+  * Helper to set media queries. Accepts min, max or both
+  */
+@mixin mq(
+  $min: null,
+  $max: null
+) {
+  $query: "";
+
+  @if $min != null {
+    $query: "(min-width: #{normalize-unit(bp($min))})";
+  }
+
+  @if $max != null {
+    @if $min != null {
+      $query: $query + " and ";
+    }
+
+    $query: $query + "(max-width: #{normalize-unit(bp($max))})";
+  }
+
+  @media #{$query} {
+    @content; 
+  }
+}
+
+/**
+  * Helper to set a ::before or ::after pseudo element
+  */
+@mixin pseudo(
+  $where: before,
+  $display: block,
+  $content: ""
+) {
+  &::#{$where} {
+    content: $content;
+    display: $display;
+    @content;
+  }
+}
+
+/**
+  * Helper to set border related properties
+  */
+@mixin border(
+  $width: null,
+  $color: null,
+  $radius: null,
+  $style: solid,
+) {
+  $sides-map: (
+    "l": border-left,
+    "r": border-right,
+    "t": border-top,
+    "b": border-bottom
+  );
+
+  $corners-map: (
+    "tl": border-top-left-radius,
+    "tr": border-top-right-radius,
+    "bl": border-bottom-left-radius,
+    "br": border-bottom-right-radius,
+    "l": (border-top-left-radius, border-bottom-left-radius),
+    "r": (border-top-right-radius, border-bottom-right-radius),
+    "t": (border-top-left-radius, border-top-right-radius),
+    "b": (border-bottom-left-radius, border-bottom-right-radius)
+  );
+ 
+  // If $width is passed as a list, with sides and width
+  @if meta.type-of($width) == "list" and list.length($width) == 2 {
+    $sides: list.nth($width, 1);
+    $border-width: normalize-unit(list.nth($width, 2));
+
+    // If just a single side was passed, create a 1 item long list with that side
+    @if meta.type-of($sides) != "list" {
+      $sides: ($sides, );
+    }
+
+    // Goes through each side and gets the property name from the $sides-map list
+    @each $side in $sides {
+      $property: map.get($sides-map, $side);
+
+      @if $property != null {
+        // If more than one side was passed
+        @if meta.type-of($property) == "list" {
+          @each $p in $property {
+            #{$p}: $border-width $style;
+          }
+        }
+        // If only one side was passed
+        @else {
+          #{$property}: $border-width $style;
+        }
+      }
+    }
+  }
+  // $width is just a number
+  @else if meta.type-of($width) == "number" {
+    border: normalize-unit($width) $style;
+  }
+
+  // If $radius is passed as a list, with corners and radius amount
+  @if meta.type-of($radius) == "list" and list.length($radius) == 2 {
+    $corners: list.nth($radius, 1);
+    $radius-amount: normalize-unit(list.nth($radius, 2));
+
+    // If just a single corner was passed, create a 1 item long list with that corner
+    @if meta.type-of($corners) != "list" {
+      $corners: ($corners, );
+    }
+
+    @each $corner in $corners {
+      $property: map.get($corners-map, $corner);
+
+      @if $property != null {
+        @if meta.type-of($property) == "list" {
+          @each $p in $property {
+            #{$p}: $radius-amount;
+          }
+        }
+        // If only one corner was passed
+        @else {
+          #{$property}: $radius-amount;
+        }
+      }
+    }
+  }
+  // $radius is just a string with a value
+  @else {
+    @include if-exists(border-radius, $radius);
+  }
+
+  @include if-exists(border-color, $color, null, null);
+}
+
+/**
+  * Helper to set background related properties
+  */
+@mixin bg(
+  $url: null,
+  $size: null,
+  $color: null,
+  $repeat: no-repeat
+) {
+  @include if-exists(background-image, url(#{$assets}#{$url}), null, null);
+  @include if-exists(background-size, $size, null, null);
+  @include if-exists(background-color, $color, null, null);
+  @include if-exists(background-repeat, $repeat, null, null);
+}
+
+/**
+  * Helper to create an icon with a mask image
+  */
+@mixin icon(
+  $url: null,
+  $size: 24px,
+  $color: null,
+  $position: center,
+  $repeat: no-repeat
+) {
+  @include wh($size, $size);
+
+  @if $color {
+    -webkit-mask-image: url("#{$assets}/icons/#{$url}");
+            mask-image: url("#{$assets}/icons/#{$url}");
+    -webkit-mask-repeat: $repeat;
+            mask-repeat: $repeat;
+    -webkit-mask-position: $position;
+            mask-position: $position;
+    -webkit-mask-size: cover;
+            mask-size: cover;
+    background-color: $color;
+    background-image: none;
+  }
+  // $color is null, fallback to regular background-image
+  @else {
+    @include bg("/icons/#{$url}");
+  }
+}

@@ -1,0 +1,26 @@
+/**
+ * Layout
+ * Header.scss
+ */
+
+@use "../0-abstracts/" as *;
+
+main {
+  @include wh(100vw, 94vh);
+  padding-top: 6vh;
+  @include flex(column, center, center);
+}
+
+section.user-input {
+  width: 100%;
+  @include padding(y, 5rem);
+  
+  .section-title {
+    margin-bottom: 24px;
+    color: var(--color-text-secondary);
+  }
+
+  footer {
+    padding-top: 2rem;
+  }
+}

@@ -1,0 +1,39 @@
+/**
+ * Abstracts
+ * Functions.scss
+ */
+
+@use "sass:map";
+@use "sass:math";
+@use "sass:meta";
+@use "variables" as *;
+
+ /**
+  * Returns normalized value with a given unit (defaults to px)
+  */
+@function normalize-unit($value, $unit: px) {
+  @return if(
+    meta.type-of($value) == "number" and math.unit($value) == "",
+    $value + $unit,
+    $value
+  );
+}
+
+/**
+  * Returns breakpoint based on a given key
+  */
+@function bp($key) {
+  @if map.has-key($breakpoints, $key) {
+    @return map.get($breakpoints, $key);
+  }
+
+  @warn "Breakpoint `#{$key}` not found in $breakpoints map.";
+  @return null;
+}
+
+/**
+  * Returns width value for X number of columns
+  */
+@function col-width($columns) {
+  @return ($container-col-width * $columns) + ($container-col-gap * ($columns - 1));
+}

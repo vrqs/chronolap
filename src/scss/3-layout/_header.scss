@@ -1,0 +1,25 @@
+/**
+ * Layout
+ * Header.scss
+ */
+
+@use "../0-abstracts/" as *;
+
+header.site-header {
+  width: 100%;
+  @include pos();
+  @include padding(y, 5vh);
+
+  .grid {
+    @include grid(1fr auto 1fr, $align-items: center);
+  }
+
+  [class*="heading"] {
+    width: col-width(4);
+    text-align: center;
+  }
+
+  button {
+    justify-self: end;
+  }
+}

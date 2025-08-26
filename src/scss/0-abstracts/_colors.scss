@@ -1,0 +1,55 @@
+/**
+ * Abstracts
+ * Colors.scss
+ *
+ * Contains all color maps and a get-color @function to get
+ * main colors/variants according to the current theme
+ */
+
+@use "sass:map";
+
+$color-theme-current: "light";
+
+$color-theme-light: (
+  basic: (
+    white: #FFF,
+    black: #000
+  ),
+  background: (
+    card: #FBFBFB,
+  ),
+  accent: (
+    primary: #00A8AE,
+  ),
+  text: (
+    primary: #00292B,
+    secondary: #879AA1,
+    tertiary: #C9D1D1,
+  )
+);
+
+$color-theme-dark: (
+  basic: (
+    white: #FFF,
+    black: #000
+  ),
+  accent: (
+    1: #000
+  )
+);
+
+$color-themes: (
+  light: $color-theme-light,
+  dark: $color-theme-dark
+);
+
+
+/**
+  * Gets a specific color variant according to current theme (light/dark)
+  * Ex: get-color(accent, 2, "dark")
+  */
+@function get-color($main, $variation, $theme: $color-theme-current) {
+  $current-theme: map.get($color-themes, $theme);
+
+  @return map.get(map.get($current-theme, $main), $variation);
+};
