@@ -25,20 +25,29 @@
           </header>
 
           <div class="card-input">
-            <div class="input-group">
+            <div class="input-group" data-input="location-1">
               <p class="label body-regular -bold">Between</p>
               
               <div class="fields flex">
-                <span data-state="filled" id="field-country" class="field heading-2">Portugal</span>
-                <span data-state="filled" id="field-zone" class="field heading-2">Lisbon</span>
+                <input type="text" class="field heading-2" placeholder="Select location" />
+                <ul class="input-results"></ul>
+                <div class="field-zones">
+                  <div class="selected-zone"></div>
+                  <ul class="zones-list"></ul>
+                </div>
               </div>
             </div>
 
-            <div class="input-group">
+            <div class="input-group" data-input="location-2">
               <p class="label body-regular -bold">And</p>
               
               <div class="fields flex">
-                <span data-state="empty" class="field heading-2">Select location</span>
+                <input type="text" class="field heading-2" placeholder="Select location" />
+                <ul class="input-results"></ul>
+                <div class="field-zones">
+                  <div class="selected-zone"></div>
+                  <ul class="zones-list"></ul>
+                </div>
               </div>
             </div>
 
@@ -55,8 +64,14 @@
           </div>
 
           <footer>
-            <button type="button" class="button-primary -search">Find Overlap</button>
+            <button type="button" data-action="search" class="button-primary -search">Find Overlap</button>
           </footer>
+        </div>
+      </section>
+
+      <section class="results-drawer flex col-center">
+        <div class="card-drawer">
+          <p>Hello world</p>
         </div>
       </section>
     </main>

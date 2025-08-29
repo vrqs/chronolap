@@ -1,15 +1,42 @@
 import { Country, Zone } from "./types";
 
-const getZoneNames = async (country: Country):Promise<Zone[]> => {
-  const countryCode: string = country.code;
+export async function getZoneNames(country: string): Promise<Zone[]> {
+  // const countryCode: string = country.code;
   const timezonedbApiKey = import.meta.env.VITE_TIMEZONEDB_API_KEY;
   
   const response = await fetch(
-    `http://api.timezonedb.com/v2.1/list-time-zone?key=${timezonedbApiKey}&format=json&country=${countryCode}`
+    `http://api.timezonedb.com/v2.1/list-time-zone?key=${timezonedbApiKey}&format=json&country=${country}`
   );
 
   const data = await response.json();
   return data?.zones;
 }
 
-export default getZoneNames;
+export function createElement<K extends keyof HTMLElementTagNameMap> (
+  tag: K,
+  options: {
+    className?: string[],
+    textContent?: string,
+    attributes?: Record <string, string>,
+    listeners?: Record <string, (e: Event) => void>
+  } = {}
+): HTMLElementTagNameMap[K] {
+  const element = document.createElement(tag);
+  
+  if(options.className) element.classList.add(...options.className);
+  if(options.textContent) element.textContent = options.textContent;
+  
+  if(options.attributes) {
+    Object.entries(options.attributes).forEach(([dataAttrName, dataAttrValue]) => {
+      element.setAttribute(dataAttrName, dataAttrValue);
+    });
+  }
+
+  if(options.listeners) {
+    Object.entries(options.listeners).forEach(([listenerName, listenerAction]) => {
+      element.addEventListener(listenerName, listenerAction);
+    });
+  }
+
+  return element;
+}

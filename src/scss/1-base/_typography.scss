@@ -16,15 +16,27 @@
 
   &-4 {
     @include font(1.25rem, 1.5rem, -.5%, 700);
+
+    &.-medium {
+      font-weight: 600;
+    }
   }
 }
 
 .body {
   &-regular {
-    @include font(1rem, 1.25rem, 0%, 450);
+    @include font(1rem, 1.25rem, -.4%, 450);
+
+    &.-medium {
+      font-weight: 550;
+    }
 
     &.-bold {
       font-weight: 650;
     }
   }
+}
+
+.-color-secondary {
+  color: var(--color-text-secondary);
 }

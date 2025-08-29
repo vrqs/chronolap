@@ -1,0 +1,29 @@
+/**
+ * Components
+ * Card-Input.scss
+ */
+
+@use "../0-abstracts/" as *;
+@use "../1-base/typography" as *;
+
+.card-drawer {
+  @include wh(100%, 400px, $max-w: col-width(6));
+  background-color: var(--color-background-card);
+  border-radius: 1.5rem;
+  overflow: hidden;
+  box-shadow:
+    0 0 3px rgba(18, 23, 24, 0.1),
+    0 0 60px rgba(0, 125, 131, 0.1);
+  opacity: 0;
+  visibility: hidden;
+  cursor: pointer;
+
+  transform: translateY(80%);
+  transition: all 220ms ease-out;
+  @include pos($pos: relative, $z: 20);
+
+  &.open {
+    transform: translateY(0%);
+    opacity: 1;
+  }
+}

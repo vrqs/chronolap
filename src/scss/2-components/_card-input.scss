@@ -6,29 +6,59 @@
 @use "../0-abstracts/" as *;
 @use "../1-base/typography" as *;
 
+%dropdown {
+  min-width: 14rem;
+  padding: .25rem;
+  background-color: var(--color-background-card);
+  @include border(1px, var(--color-border-primary), 1rem);
+  overflow: hidden;
+  box-shadow:
+    0 0 3px rgba(18, 23, 24, 0.1),
+    0 0 14px rgba(18, 23, 24, 0.1);
+}
+
+%dropdown-item {
+  padding: .5rem 1rem;
+  border-radius: .75rem;
+  cursor: pointer;
+  
+  &:hover {
+    background-color: var(--color-hover-item);
+  }
+}
+
 .card-input {
   @include wh(100%, $max-w: col-width(6));
   background-color: var(--color-background-card);
   border-radius: 1.5rem;
-  overflow: hidden;
   box-shadow:
     0 0 3px rgba(18, 23, 24, 0.1),
     0 0 60px rgba(0, 125, 131, 0.1);
-  position: relative;
-  z-index: 0;
+  @include pos($pos: relative, $z: 0);
+
+  input {
+    padding: 0;
+    background-color: transparent;
+    width: 100%;
+  }
 
   .input-group {
-    padding: 1.5rem 2.5rem;
+    padding: 1.5rem 2rem;
     position: relative;
     background-color: var(--color-background-card);
     box-shadow: 0 0 40px rgba(18, 23, 24, 0.06);
 
     &:first-child {
       z-index: 10;
+      @include border($radius: ((tl, tr), 1.5rem));
     }
 
     &:nth-child(2) {
       z-index: 5;
+    }
+
+    &:last-child {
+      @include border($radius: ((bl, br), 1.5rem));
     }
 
     &:not(#group-timeframe) .label {
@@ -36,64 +66,107 @@
       color: var(--color-text-secondary);
     }
 
-    .field {
-      cursor: pointer;
+    .fields { position: relative; }
+  }
 
-      &[data-state="empty"] {
-        color: var(--color-text-tertiary);
+  .location-selector {
+    @include pos(6rem, $l: 1.75rem, $z: 999);
+    background-color: var(--color-background-card);
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow:
+      0 0 3px rgba(18, 23, 24, 0.1);
+    visibility: hidden;
+    opacity: 0;
+
+    header {
+      input {
+        width: 100%;
+        padding: .5rem 1rem;
+        border-bottom: 1px solid var(--color-border-primary);
       }
     }
 
-    #field-country {
-      @include flex(row, center);
-
-      @include pseudo(after) {
-        @include icon("ic-arrow-right.svg", 1rem);
-        margin-inline: .5rem;
-        cursor: initial;
-      }
+    .countries {
+      max-height: 200px;
+      overflow-y: scroll;
     }
 
-    &#group-timeframe {
-      label {
-        user-select: none;
+    li {
+      padding: .25rem 1rem;
+      
+      &:not(:first-child) {
         cursor: pointer;
-        @include flex(row, center, $gap: .5rem);
-        position: relative;
 
-        @include pseudo(before) {
-          @include wh(32px, 20px);
-          background: linear-gradient(#EBF2F2 0%, #D7DDDD 100%);
-          @include border(1.5px, var(--color-text-tertiary), 2rem);
-          transition: all 80ms;
-        }
-
-        @include pseudo(after) {
-          @include wh(15px, 15px);
-          background: linear-gradient(#FFF 0%, #ECECEC 100%);
-          @include border(1.5px, var(--color-text-secondary), 2rem);
-          @include pos($l: 2.5px);
-          transition: all 80ms;
+        &:hover {
+          color: var(--color-text-secondary);
         }
       }
+    }
 
-      #timeframe:checked + label {
-        @include pseudo(before) {
-          border-color: var(--color-accent-primary);
-          background: linear-gradient(rgba(0, 168, 174, .56) 0%, rgba(0, 168, 174, .86) 100%);
-          transition: all 80ms;
-        }
+    &.open {
+      visibility: visible;
+      opacity: 1;
+    }
+  }
 
-        @include pseudo(after) {
-          @include pos($l: calc(1rem - 1.5px));
-          border-color: var(--color-accent-primary);
-          transition: all 80ms;
-        }
-      }
+  // Country suggestions
+  .input-results {
+    @include pos(3.5rem, $z: 999);
+    @extend %dropdown;
 
-      .divider {
+    &:not(.visible) {
+      visibility: hidden;
+      opacity: 0;
+    }
+
+    li {
+      @extend %dropdown-item;
+      @extend .heading-4, .-medium;
+    }
+  }
+
+  // Timezone selection field
+  .field-zones {
+    position: relative;
+
+    .selected-zone {
+      flex-shrink: 0;
+      @include wh(10rem, 2.5rem);
+      @include flex(row, center);
+      padding-inline: .75rem;
+      @include border(1.5px, var(--color-border-primary), .75rem); 
+      background-color: rgba(255, 255, 255, .8);
+      backdrop-filter: blur(5px);
+      cursor: pointer;
+      @extend .body-regular,.-bold;
+      transform: translateY(4px);
+
+      span {
         color: var(--color-text-secondary);
-        margin-inline: .5rem;
+      }
+    }
+
+    .zones-list {
+      @extend %dropdown;
+      @include pos(3.5rem);
+      @include wh(max-content, $max-h: 15rem);
+      overflow-y: scroll;
+      visibility: hidden;
+      -ms-overflow-style: none;  /* IE and Edge */
+      scrollbar-width: none;
+      
+      &::-webkit-scrollbar {
+        display: none;
+      }
+
+      li {
+        @extend %dropdown-item;
+        @extend .body-regular, .-medium;
+      }
+
+      &.visible {
+        visibility: visible;
       }
     }
   }

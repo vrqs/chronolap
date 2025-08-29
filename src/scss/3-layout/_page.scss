@@ -9,11 +9,13 @@ main {
   @include wh(100vw, 94vh);
   padding-top: 6vh;
   @include flex(column, center, center);
+  overflow: hidden;
 }
 
 section.user-input {
   width: 100%;
   @include padding(y, 5rem);
+  z-index: 10;
   
   .section-title {
     margin-bottom: 24px;
@@ -23,4 +25,11 @@ section.user-input {
   footer {
     padding-top: 2rem;
   }
+}
+
+section.results-drawer {
+  width: 100%;
+  @include pos($b: 0);
+  overflow: hidden;
+  @include padding(y, (80px, 16px));
 }

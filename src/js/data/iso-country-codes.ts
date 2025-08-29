@@ -938,7 +938,7 @@ const Countries: Country[]  = [
     "code":"AE",
   },
   {
-    "name":"United Kingdom of Great Britain and Northern Ireland",
+    "name":"United Kingdom",
     "code":"GB",
   },
   {
