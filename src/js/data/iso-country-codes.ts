@@ -910,7 +910,7 @@ const Countries: Country[]  = [
     "code":"TN",
   },
   {
-    "name":"Türkiye",
+    "name":"Turkey",
     "code":"TR",
   },
   {
