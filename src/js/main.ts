@@ -8,7 +8,8 @@ import { Country } from "./types";
 import Countries from "./data/iso-country-codes";
 import { getZoneNames, createElement } from "./util";
 
-const countryInputs = document.querySelectorAll<HTMLInputElement>("[data-input] input");
+const inputGroups = document.querySelectorAll<HTMLDivElement>(".input-group[data-input]");
+const countryInputs = document.querySelectorAll<HTMLInputElement>(".input-group[data-input] input");
 const actionSearch = document.querySelector<HTMLButtonElement>("[data-action='search']");
 const resultsDrawer = document.querySelector<HTMLDivElement>(".card-drawer");
 
@@ -233,6 +234,14 @@ function makeVisible(node: any) {
   node.classList.add("visible");
 }
 
+function initUI() {
+  inputGroups.forEach((group, index) => {
+    group.setAttribute("data-input", `${index}`);
+
+    countryInputs[index].setAttribute("data-input", `${index}`);
+  });
+}
+
 function resetSelectedTimezone(timezoneToReset: any) {
   timezoneToReset.querySelector(".selected-zone").innerHTML = "<span>Select a country</span>";
   timezoneToReset.querySelector(".zones-list").innerHTML = "";
@@ -327,7 +336,7 @@ function populateTimezonesGroup(timezoneGroupElement: HTMLDivElement, timezonesL
 function initCountrySearch() {
   countryInputs.forEach(countryInput => {
     const countryInputResults = <HTMLUListElement>countryInput.nextElementSibling;
-    const timezoneGroupElement = <HTMLDivElement>countryInput.parentElement!.querySelector(".field-zones")!;
+    const timezoneGroupElement = <HTMLDivElement>countryInput.parentElement!.nextElementSibling;
 
     function hideResultsCard() {
       countryInputResults.classList.remove("visible");
@@ -335,6 +344,24 @@ function initCountrySearch() {
 
     function showResultsCard() {
       countryInputResults.classList.add("visible");
+    }
+
+    function enableCountryClear() {
+      const countryIndex: string = countryInput.getAttribute("data-input")!;
+      
+      inputGroups[parseInt(countryIndex)].setAttribute("data-deleatable", "true");
+      inputGroups[parseInt(countryIndex)].querySelector(".clear")?.addEventListener("click", clearCountry);
+    }
+
+    function disableCountryClear() {
+      const countryIndex: string = countryInput.getAttribute("data-input")!;      
+      inputGroups[parseInt(countryIndex)].setAttribute("data-deleatable", "false");
+    }
+
+    function clearCountry() {
+      countryInput.value = "";
+      resetSelectedTimezone(timezoneGroupElement);
+      disableCountryClear();
     }
 
     function populateResults(label: string, code: string) {
@@ -374,6 +401,8 @@ function initCountrySearch() {
       
 
       if(query !== "") {
+        enableCountryClear();
+
         if(filtered.length > 0) {
           filtered.slice(0, 5).forEach(result => {
             populateResults(result.name, result.code);
@@ -384,12 +413,14 @@ function initCountrySearch() {
       }
       else {
         hideResultsCard();
+        disableCountryClear();
       }
     });
   });
 }
 
 function init() {
+  initUI();
   resetCountry();
   resetAllSelectedTimezones();
   initCountrySearch();

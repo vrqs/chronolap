@@ -389,5 +389,6 @@
   // $color is null, fallback to regular background-image
   @else {
     @include bg("/icons/#{$url}");
+    background-color: transparent;
   }
 }
