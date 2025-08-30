@@ -458,8 +458,9 @@ function initCountrySearch() {
   });
 }
 
-function calculateTimeDiff() {
-  console.log("Calculating");
+async function calculateTimeDiff() {
+  const response = await fetch(`/api/get-timezones?country=PT`);
+  console.log(await response.json());
 }
 
 function init() {
@@ -469,7 +470,7 @@ function init() {
   initCountrySearch();
 
   actionSearch?.addEventListener("click", e => {
-     calculateTimeDiff();
+    calculateTimeDiff();
   });
 }
 

@@ -6,7 +6,7 @@ export async function getZoneNames(country: string): Promise<Zone[]> {
     console.log("FETCHING");
 
     const response = await fetch(
-      `https://api.timezonedb.com/v2.1/list-time-zone?key=${timezonedbApiKey}&format=json&country=${country}`
+      `/api/get-timezones?country=${country}`
     );
 
     const data = await response.json();
