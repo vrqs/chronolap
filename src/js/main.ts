@@ -251,6 +251,7 @@ function resetCountry() {
 function populateTimezonesGroup(timezoneGroupElement: HTMLDivElement, timezonesList: any) {
   const selectedZone: HTMLDivElement = timezoneGroupElement.querySelector(".selected-zone")!;
   const timezonesListElement: HTMLUListElement = timezoneGroupElement.querySelector(".zones-list")!;
+  let timezonesListVisible = false;
 
   function removePrepend(toRemoveFrom: string) {
     return toRemoveFrom
@@ -285,8 +286,9 @@ function populateTimezonesGroup(timezoneGroupElement: HTMLDivElement, timezonesL
     });
   }
 
-  function hideZonesListElement() {
+  function hideTimezonesListElement() {
     timezonesListElement.classList.remove("visible");
+    timezonesListVisible = false;
   }
 
   function selectZone(index: number) {
@@ -297,7 +299,7 @@ function populateTimezonesGroup(timezoneGroupElement: HTMLDivElement, timezonesL
     selectedZone.setAttribute("data-index", `${index}`);
 
     populateSelectableTimezones(timezonesList, index);
-    hideZonesListElement();
+    hideTimezonesListElement();
   }
 
   populateSelectableTimezones(timezonesList); 
@@ -305,8 +307,19 @@ function populateTimezonesGroup(timezoneGroupElement: HTMLDivElement, timezonesL
 
   // Only shows dropdown if there are results to show
   selectedZone.addEventListener("click", () => {
-    if(timezonesListElement.children.length !== 0) {
-      makeVisible(timezonesListElement);
+    if(!timezonesListVisible) {
+      if(timezonesListElement.children.length !== 0) {
+        makeVisible(timezonesListElement);
+        timezonesListVisible = true;
+
+        document.addEventListener("click", e => {
+          if (!timezonesListElement.contains(e.target as Node) && !selectedZone.contains(e.target as Node)) {
+            hideTimezonesListElement();
+          }
+        });
+      }
+    } else {
+      hideTimezonesListElement();
     }
   });
 }
