@@ -229,8 +229,19 @@ function toggleDrawer() {
     resultsDrawer?.removeEventListener("click", toggleDrawer);
 }
 
-function resetSelectedTimezone() {
-  document.querySelectorAll(".selected-zone").forEach(selectedZone => selectedZone.innerHTML = "<span>Select a country</span>");
+function makeVisible(node: any) {
+  node.classList.add("visible");
+}
+
+function resetSelectedTimezone(timezoneToReset: any) {
+  timezoneToReset.querySelector(".selected-zone").innerHTML = "<span>Select a country</span>";
+  timezoneToReset.querySelector(".zones-list").innerHTML = "";
+}
+
+function resetAllSelectedTimezones() {
+  document.querySelectorAll(".field-zones").forEach(timezoneGroup => {
+    resetSelectedTimezone(timezoneGroup);
+  });
 }
 
 function resetCountry() {
@@ -240,69 +251,64 @@ function resetCountry() {
 function populateTimezonesGroup(timezoneGroupElement: HTMLDivElement, timezonesList: any) {
   const selectedZone: HTMLDivElement = timezoneGroupElement.querySelector(".selected-zone")!;
   const timezonesListElement: HTMLUListElement = timezoneGroupElement.querySelector(".zones-list")!;
+
+  function removePrepend(toRemoveFrom: string) {
+    return toRemoveFrom
+              .replace("_", " ")
+              .replace("America/", "")
+              .replace("Asia/", "")
+              .replace("Europe/", "")
+              .replace("Pacific/", "")
+              .replace("Atlantic/", "");
+  }
   
-  function populateSelectableTimezones(timezonesListToUse: any) {
+  function populateSelectableTimezones(timezonesList: any, currentSelection?: number) {
     // Clear all first
     timezonesListElement.replaceChildren();
     
-    timezonesListToUse.forEach((timezone: any) => {
+    timezonesList.forEach((timezone: any, index: number) => {
       timezonesListElement.appendChild(
         createElement("li", {
           textContent: removePrepend(timezone.zoneName),
+          className: currentSelection === index ? ["selected"] : [],
+          attributes: {
+            "data-index": `${index}`
+          },
           listeners: {
-            "click": (e) => { selectZone(e, timezone) },
+            "click": (e) => {
+              const target = e.target as HTMLElement;
+              selectZone(parseInt(target.getAttribute("data-index")!));
+            },
           }
         })
       );
     });
   }
 
-  function removePrepend(toRemoveFrom: string) {
-    return toRemoveFrom
-              .replace("_", " ")
-              .replace("America/", "");
-  }
-
-  function showSelectedZone() {
-    selectedZone.classList.add("visible");
-    selectedZone.textContent = removePrepend(timezonesList[0].zoneName);
-  }
-
   function hideZonesListElement() {
     timezonesListElement.classList.remove("visible");
   }
 
-  function selectZone(e: any, timezone: any) {
-    const label = e.target.textContent;
+  function selectZone(index: number) {
+    const zoneToSelect = timezonesList[index];
+    const label = zoneToSelect.zoneName;
     
-    selectedZone.textContent = label;
+    selectedZone.textContent = removePrepend(label);
+    selectedZone.setAttribute("data-index", `${index}`);
 
-    const updatedList = timezonesList.filter((timezone: any) => (
-      !timezone.zoneName.includes(label)
-    ));
-
-    populateSelectableTimezones(updatedList);
-    
+    populateSelectableTimezones(timezonesList, index);
     hideZonesListElement();
   }
 
-  showSelectedZone();
-  populateSelectableTimezones(timezonesList.slice(1));
+  populateSelectableTimezones(timezonesList); 
+  selectZone(0);
 
+  // Only shows dropdown if there are results to show
   selectedZone.addEventListener("click", () => {
-    console.log(timezonesList);
-    timezonesListElement.classList.toggle("visible");
+    if(timezonesListElement.children.length !== 0) {
+      makeVisible(timezonesListElement);
+    }
   });
-
-  // document.addEventListener("click", e => {
-  //   if(
-  //     !timezonesListElement.contains(e.target as Node) &&
-  //     !selectedZone.contains(e.target as Node)
-  //   ) {
-  //     console.log("Hiding");
-  //     hideZonesListElement();
-  //   }
-  // });
 }
 
 function initCountrySearch() {
@@ -327,31 +333,32 @@ function initCountrySearch() {
             "data-country-code": code,
           },
           listeners: {
-            "click": () => { code !== "" ? populateInput(label) : null },
+            "click": () => { code !== "" ? populateInput(label, code) : null },
           }
         })
       );
     }
 
-    async function populateInput(content: string) {
+    async function populateInput(label: string, code: string) {
       countryInputResults.replaceChildren();
-      countryInput.value = content;
+      countryInput.value = label;
       hideResultsCard();
 
       populateTimezonesGroup(
         timezoneGroupElement,
-        mockZones,
+        await getZoneNames(code),
       );
     }
     
     // While writing country name
     countryInput.addEventListener("input", e => {      
-      const query = (e.target as HTMLInputElement).value.toLowerCase();
-      const filtered = Countries.filter(country => country.name.toLowerCase().startsWith(query));
+      const query = (e.target as HTMLInputElement).value.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase();
+      const filtered = Countries.filter(country => country.name.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase().startsWith(query));
       
-      resetSelectedTimezone();
+      resetSelectedTimezone(timezoneGroupElement);
       countryInputResults.replaceChildren();
       showResultsCard();
+      
 
       if(query !== "") {
         if(filtered.length > 0) {
@@ -371,7 +378,7 @@ function initCountrySearch() {
 
 function init() {
   resetCountry();
-  resetSelectedTimezone();
+  resetAllSelectedTimezones();
   initCountrySearch();
 
   actionSearch?.addEventListener("click", e => {
