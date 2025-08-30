@@ -145,6 +145,10 @@
       transform: translateY(4px);
       user-select: none;
 
+      &:active {
+        border-color: var(--color-text-tertiary);
+      }
+
       span {
         color: var(--color-text-secondary);
       }
