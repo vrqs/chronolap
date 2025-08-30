@@ -1,15 +1,18 @@
 import { Country, Zone } from "./types";
 
 export async function getZoneNames(country: string): Promise<Zone[]> {
-  // const countryCode: string = country.code;
   const timezonedbApiKey = import.meta.env.VITE_TIMEZONEDB_API_KEY;
-  
-  const response = await fetch(
-    `http://api.timezonedb.com/v2.1/list-time-zone?key=${timezonedbApiKey}&format=json&country=${country}`
-  );
+  try {
+    const response = await fetch(
+      `http://api.timezonedb.com/v2.1/list-time-zone?key=${timezonedbApiKey}&format=json&country=${country}`
+    );
 
-  const data = await response.json();
-  return data?.zones;
+    const data = await response.json();
+    return data?.zones;
+  } catch(e) {
+    console.error("Error fetching timezones::", e);
+    return [];
+  }
 }
 
 export function createElement<K extends keyof HTMLElementTagNameMap> (
