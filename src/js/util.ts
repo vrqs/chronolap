@@ -4,7 +4,7 @@ export async function getZoneNames(country: string): Promise<Zone[]> {
   const timezonedbApiKey = import.meta.env.VITE_TIMEZONEDB_API_KEY;
   try {
     const response = await fetch(
-      `http://api.timezonedb.com/v2.1/list-time-zone?key=${timezonedbApiKey}&format=json&country=${country}`
+      `https://api.timezonedb.com/v2.1/list-time-zone?key=${timezonedbApiKey}&format=json&country=${country}`
     );
 
     const data = await response.json();
