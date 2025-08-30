@@ -22,7 +22,8 @@
   border-radius: .75rem;
   cursor: pointer;
   
-  &:hover {
+  &:hover,
+  &.selected {
     background-color: var(--color-hover-item);
   }
 }
@@ -141,6 +142,7 @@
       cursor: pointer;
       @extend .body-regular,.-bold;
       transform: translateY(4px);
+      user-select: none;
 
       span {
         color: var(--color-text-secondary);
