@@ -276,7 +276,7 @@ function populateTimezonesGroup(timezoneGroupElement: HTMLDivElement, timezonesL
             "data-index": `${index}`
           },
           listeners: {
-            "pointerdown": (e) => {
+            "pointerup": (e) => {
               const target = e.target as HTMLElement;
               selectZone(parseInt(target.getAttribute("data-index")!));
             },
@@ -306,7 +306,7 @@ function populateTimezonesGroup(timezoneGroupElement: HTMLDivElement, timezonesL
   selectZone(0);
 
   // Only shows dropdown if there are results to show
-  selectedZone.addEventListener("pointerdown", () => {
+  selectedZone.addEventListener("pointerup", () => {
     if(!timezonesListVisible) {
       if(timezonesListElement.children.length !== 0) {
         makeVisible(timezonesListElement);

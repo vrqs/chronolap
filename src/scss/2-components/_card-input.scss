@@ -23,6 +23,7 @@
   cursor: pointer;
   
   &:hover,
+  &:active,
   &.selected {
     background-color: var(--color-hover-item);
   }
