@@ -1,4 +1,4 @@
-import { Country, Zone } from "./types";
+import { Zone } from "./types";
 
 export async function getZoneNames(country: string): Promise<Zone[]> {
   const timezonedbApiKey = import.meta.env.VITE_TIMEZONEDB_API_KEY;
