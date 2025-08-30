@@ -6,8 +6,8 @@
 @use "../0-abstracts/" as *;
 
 main {
-  @include wh(100vw, 94vh);
-  padding-top: 6vh;
+  @include wh(100vw, 100vh);
+  padding-top: 10vh;
   @include flex(column, center, center);
   overflow: hidden;
 }

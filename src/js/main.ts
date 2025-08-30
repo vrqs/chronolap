@@ -200,7 +200,6 @@ async function populateTimezonesGroup(timezoneGroupElement: HTMLDivElement, coun
   }
 }
 
-
 /**
  * Initializes Country search
  * 
