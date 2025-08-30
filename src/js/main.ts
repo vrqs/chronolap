@@ -235,7 +235,9 @@ function initCountrySearch() {
 
     function clearCountry() {
       countryInput.value = "";
+      countryInput.focus();
       resetSelectedTimezone(timezoneGroupElement);
+      hideResultsCard();
       disableCountryClear();
     }
 
