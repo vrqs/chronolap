@@ -4,7 +4,7 @@
 
 import "../scss/main.scss";
 
-import { Country } from "./types";
+import { Zone } from "./types";
 import Countries from "./data/iso-country-codes";
 import { getZoneNames, createElement } from "./util";
 
@@ -257,9 +257,17 @@ function resetCountry() {
   countryInputs.forEach(input => input.value = "");
 }
 
-function populateTimezonesGroup(timezoneGroupElement: HTMLDivElement, timezonesList: any) {
+/**
+ * Fetches timezones and populates selector
+ * 
+ * @param timezoneGroupElement – The group to populate
+ * @param countryCode – Country code to fetch timezones
+ */
+async function populateTimezonesGroup(timezoneGroupElement: HTMLDivElement, countryCode: string) {
+  // const timezonesList = await getZoneNames(countryCode);
   const selectedZone: HTMLDivElement = timezoneGroupElement.querySelector(".selected-zone")!;
   const timezonesListElement: HTMLUListElement = timezoneGroupElement.querySelector(".zones-list")!;
+  let timezonesList: Zone[] = [];
   let timezonesListVisible = false;
 
   function removePrepend(toRemoveFrom: string) {
@@ -272,7 +280,7 @@ function populateTimezonesGroup(timezoneGroupElement: HTMLDivElement, timezonesL
               .replace("Atlantic/", "");
   }
   
-  function populateSelectableTimezones(timezonesList: any, currentSelection?: number) {
+  function populateSelectableTimezones(timezonesList: any, currentSelection?: number) {    
     // Clear all first
     timezonesListElement.replaceChildren();
     
@@ -306,31 +314,65 @@ function populateTimezonesGroup(timezoneGroupElement: HTMLDivElement, timezonesL
     
     selectedZone.textContent = removePrepend(label);
     selectedZone.setAttribute("data-index", `${index}`);
+    selectedZone.setAttribute("data-timezone-name", `${label.toLowerCase()}`);
 
     populateSelectableTimezones(timezonesList, index);
     hideTimezonesListElement();
   }
 
-  populateSelectableTimezones(timezonesList); 
-  selectZone(0);
+  function setLoadingState() {
+    selectedZone.textContent = "Getting timezones..."
+  }
 
-  // Only shows dropdown if there are results to show
-  selectedZone.addEventListener("pointerup", () => {
-    if(!timezonesListVisible) {
-      if(timezonesListElement.children.length !== 0) {
-        makeVisible(timezonesListElement);
-        timezonesListVisible = true;
+  // Selects first timezone by default
+  setLoadingState();
+  
+  try {
+    const rawCache = localStorage.getItem("clCached");
+    let cache = rawCache ? JSON.parse(rawCache) : [];
+    const cachedItem = cache.find((item: any) => item.country === countryCode);
 
-        document.addEventListener("pointerdown", e => {
-          if (!timezonesListElement.contains(e.target as Node) && !selectedZone.contains(e.target as Node)) {
-            hideTimezonesListElement();
-          }
-        });
+    if(!cachedItem) {
+      timezonesList = await getZoneNames(countryCode);
+
+      const newCacheItem = {
+        country: timezonesList[0].countryCode,
+        timezones: timezonesList
       }
+      cache.push(newCacheItem);
+      localStorage.setItem("clCached", JSON.stringify(cache));
     } else {
-      hideTimezonesListElement();
+      timezonesList = cachedItem.timezones;
     }
-  });
+
+    if(!timezonesList.length) {
+      selectedZone.textContent = "Failed fetch";
+      return;
+    }
+    
+    populateSelectableTimezones(timezonesList, 0);
+    selectZone(0);
+
+    // Only shows dropdown if there are results to show
+    selectedZone.addEventListener("pointerup", () => {
+      if(!timezonesListVisible) {
+        if(timezonesListElement.children.length !== 0) {
+          makeVisible(timezonesListElement);
+          timezonesListVisible = true;
+
+          document.addEventListener("pointerdown", e => {
+            if (!timezonesListElement.contains(e.target as Node) && !selectedZone.contains(e.target as Node)) {
+              hideTimezonesListElement();
+            }
+          });
+        }
+      } else {
+        hideTimezonesListElement();
+      }
+    });
+  } catch(e) {
+    console.error("Error populating timezones list:: ", e);
+  }
 }
 
 function initCountrySearch() {
@@ -384,10 +426,7 @@ function initCountrySearch() {
       countryInput.value = label;
       hideResultsCard();
 
-      populateTimezonesGroup(
-        timezoneGroupElement,
-        await getZoneNames(code),
-      );
+      populateTimezonesGroup(timezoneGroupElement, code);
     }
     
     // While writing country name
@@ -419,6 +458,10 @@ function initCountrySearch() {
   });
 }
 
+function calculateTimeDiff() {
+  console.log("Calculating");
+}
+
 function init() {
   initUI();
   resetCountry();
@@ -426,7 +469,7 @@ function init() {
   initCountrySearch();
 
   actionSearch?.addEventListener("click", e => {
-    toggleDrawer();
+     calculateTimeDiff();
   });
 }
 

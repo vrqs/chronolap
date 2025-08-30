@@ -4,6 +4,7 @@ export interface Country {
 }
 
 export interface Zone {
+  countryCode: string;
   zoneName: string;
   gmtOffset: number;
 }
