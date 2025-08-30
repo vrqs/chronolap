@@ -276,7 +276,7 @@ function populateTimezonesGroup(timezoneGroupElement: HTMLDivElement, timezonesL
             "data-index": `${index}`
           },
           listeners: {
-            "click": (e) => {
+            "pointerdown": (e) => {
               const target = e.target as HTMLElement;
               selectZone(parseInt(target.getAttribute("data-index")!));
             },
@@ -306,13 +306,13 @@ function populateTimezonesGroup(timezoneGroupElement: HTMLDivElement, timezonesL
   selectZone(0);
 
   // Only shows dropdown if there are results to show
-  selectedZone.addEventListener("click", () => {
+  selectedZone.addEventListener("pointerdown", () => {
     if(!timezonesListVisible) {
       if(timezonesListElement.children.length !== 0) {
         makeVisible(timezonesListElement);
         timezonesListVisible = true;
 
-        document.addEventListener("click", e => {
+        document.addEventListener("pointerdown", e => {
           if (!timezonesListElement.contains(e.target as Node) && !selectedZone.contains(e.target as Node)) {
             hideTimezonesListElement();
           }
@@ -346,7 +346,7 @@ function initCountrySearch() {
             "data-country-code": code,
           },
           listeners: {
-            "click": () => { code !== "" ? populateInput(label, code) : null },
+            "pointerdown": () => { code !== "" ? populateInput(label, code) : null },
           }
         })
       );
