@@ -45,3 +45,10 @@ export function createElement<K extends keyof HTMLElementTagNameMap> (
 
   return element;
 }
+
+export function appendElements(
+  parent: HTMLElement,
+  toAppend: HTMLElement[]
+) {
+  toAppend.forEach(element => parent.appendChild(element));
+}

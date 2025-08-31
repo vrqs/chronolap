@@ -42,6 +42,7 @@
     padding: 0;
     background-color: transparent;
     width: 100%;
+    @extend .heading-2;
   }
 
   .input-group {
@@ -50,13 +51,25 @@
     background-color: var(--color-background-card);
     box-shadow: 0 0 40px rgba(18, 23, 24, 0.06);
 
+    .label {
+      @extend .body-regular, .-bold;
+    }
+
     &:first-child {
       z-index: 10;
       @include border($radius: ((tl, tr), 1.5rem));
     }
 
     &:nth-child(2) {
-      z-index: 5;
+      z-index: 9;
+    }
+    
+    &:nth-child(3) {
+      z-index: 8;
+    }
+
+    &:nth-child(4) {
+      z-index: 7;
     }
 
     &:last-child {
@@ -68,7 +81,10 @@
       color: var(--color-text-secondary);
     }
 
-    .fields { position: relative; }
+    .fields {
+      @include flex();
+      position: relative;
+    }
 
     button.clear {
       @include wh(1.5rem, 1.5rem);
@@ -81,7 +97,7 @@
       transition: all 20ms;
     }
 
-    &[data-deleatable="true"] {
+    &[data-clearable="true"] {
       button.clear {
         visibility: visible;
         opacity: 1;
@@ -131,9 +147,14 @@
   }
 
   // Country suggestions
-  .input-results {
+  .results {
     @include pos(3.5rem, $z: 999);
     @extend %dropdown;
+
+    &[data-visible="true"] {
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
 
     &:not(.visible) {
       visibility: hidden;
@@ -146,8 +167,8 @@
     }
   }
 
-  // Timezone selection field
-  .field-zones {
+  // Timezone selection wrapper
+  .zones-wrapper {
     position: relative;
 
     .selected-zone {
@@ -190,7 +211,8 @@
         @extend .body-regular, .-medium;
       }
 
-      &.visible {
+      &.visible,
+      &[data-visible="true"] {
         visibility: visible;
       }
     }
