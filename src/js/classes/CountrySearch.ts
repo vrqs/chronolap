@@ -162,7 +162,9 @@ class CountrySearch {
   private getCache(code?: string) {
     const raw = localStorage.getItem("clCached") as string;
     const cache = JSON.parse(raw);
-    
+
+    if(!cache) return [];
+
     return code ? cache.find((item: any) => item.country === code) : cache;
   }
 
@@ -194,7 +196,7 @@ class CountrySearch {
     let list: Zone[] = [];
     const cachedItem = this.getCache(code);
     
-    if(!cachedItem) {
+    if(cachedItem.length === 0) {
       try {
         list = await getZoneNames(code) as Zone[];
         this.setCache(list[0].countryCode, list);
