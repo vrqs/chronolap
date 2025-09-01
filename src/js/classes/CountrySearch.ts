@@ -4,22 +4,27 @@
  */
 
 import Countries from "../data/iso-country-codes";
-import { getZoneNames, createElement, appendElements } from "../util";
+import Zones from "../data/timezones";
+import { getZoneNames, getZone, createElement, appendElements } from "../util";
 import { Zone } from "../types";
 
 class CountrySearch {
   private index: number;
+  private _currentCountry!: string;
   private _clearable: boolean = false;
   private _showZonesList: boolean = false;
   private _withZones: boolean = false;
   private _currentZone: number = 0;
-  private _currentZonesList!: Zone[];
+  private _currentZonesList!: { zoneName: string }[];
   private _withResults: boolean = false;
   private container!: HTMLDivElement;
   private input!: HTMLInputElement;
   private results!: HTMLUListElement;
   private selectedZone!: HTMLDivElement;
   private zonesList!: HTMLUListElement;
+  
+  public countryName: string = "";
+  public zoneName: string = "";
 
   constructor(container: HTMLDivElement, insertBefore: HTMLElement, index: number) {
     this.index = index;
@@ -72,12 +77,21 @@ class CountrySearch {
     return this._currentZone;
   }
 
-  set currentZonesList(value: Zone[]) {
+  set currentZonesList(value: { zoneName: string }[]) {
     this._currentZonesList = value;
+    this.populateZonesList(value);
   }
 
   get currentZonesList(): Zone[] {
     return this._currentZonesList;
+  }
+
+  set currentCountry(country: string) {
+    this._currentCountry = country;
+  }
+
+  get currentCountry(): string {
+    return this._currentCountry;
   }
 
   private mountUI(container: HTMLDivElement, insertBefore: HTMLElement) {
@@ -182,9 +196,11 @@ class CountrySearch {
     localStorage.setItem("clCached", JSON.stringify(cache));
   }
 
-  private populateInput(label: string, code: string) {
+  private selectCountry(label: string, code: string) {
     this.input.value = label;
     this.withResults = false;
+    this.currentCountry = label;
+    this.countryName = label;
     this.initiateZones(code);
   }
 
@@ -195,31 +211,17 @@ class CountrySearch {
   private async initiateZones(code: string) {
     this.selectedZone.textContent = "Getting zones...";
     
-    let list: Zone[] = [];
-    const cachedItem = this.getCache(code);
+    const countryZones = Zones.filter(zone => zone.countryCode === code);
     
-    if(!cachedItem || cachedItem.length === 0) {
-      try {
-        list = await getZoneNames(code) as Zone[];
-        this.setCache(list[0].countryCode, list);
-      } catch(e) {
-        console.error("Failed fetching timezones", e);
-      }
-    } else {
-      list = cachedItem.timezones as Zone[];
-    }
-
+    this.currentZonesList = countryZones;
     this.withZones = true;
-    this.currentZonesList = list;
-    
     this.selectZone(this.currentZone);
-    this.populateZonesList(list, this.currentZone);
   }
 
-  private populateZonesList(zones: Zone[], active?: number) {
+  private populateZonesList(zones: any, active?: number) {
     this.zonesList.replaceChildren();
 
-    zones.forEach((zone: Zone, index: number) => {
+    zones.forEach((zone: any, index: number) => {
       this.zonesList.appendChild(
         createElement("li", {
           textContent: this.removePrepend(zone.zoneName),
@@ -241,6 +243,8 @@ class CountrySearch {
     this.selectedZone.setAttribute("data-zone", this.currentZonesList[index].zoneName);
     this.showZonesList = false;
 
+    this.zoneName = this.currentZonesList[index].zoneName;
+
     this.populateZonesList(this.currentZonesList, index);
 
     this.currentZone = index;
@@ -260,7 +264,7 @@ class CountrySearch {
           "data-country-code": code ? code : "",
         },
         listeners: {
-          "pointerup": () => { code ? this.populateInput(label, code) : "" }
+          "pointerup": () => { code ? this.selectCountry(label, code) : "" }
         }
       })
     )
@@ -288,6 +292,13 @@ class CountrySearch {
       });
     } else {
       this.populateResults("No countries found");
+    }
+  }
+
+  public getData() {
+    return {
+      country: this.currentCountry,
+      zone: this.currentZonesList[this.currentZone],
     }
   }
 }

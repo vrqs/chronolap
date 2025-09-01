@@ -7,7 +7,7 @@
 
 main {
   @include wh(100vw, 100vh);
-  padding-top: 10vh;
+  // padding-top: 10vh;
   @include flex(column, center, center);
   overflow: hidden;
 }
@@ -27,9 +27,17 @@ section.user-input {
   }
 }
 
-section.results-drawer {
-  width: 100%;
-  @include pos($b: 0);
+section.overlap-results {
+  @include wh(100vw, 100vh);
+  @include pos($z: 100);
+  @include flex(row, center, center);
+  background-color: rgba(#000, $alpha: .5);
   overflow: hidden;
-  @include padding(y, (80px, 16px));
+  visibility: hidden;
+  opacity: 0;
+  
+  &[data-visible="true"] {
+    visibility: visible;
+    opacity: 1;
+  }
 }

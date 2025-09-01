@@ -3,7 +3,7 @@ import { Zone } from "./types";
 export async function getZoneNames(country: string): Promise<Zone[]> {
   const timezonedbApiKey = import.meta.env.VITE_TIMEZONEDB_API_KEY;
   try {
-    console.log("FETCHING");
+    console.log(`Fetching timezones for ${country}`);
 
     const response = await fetch(
       `/api/get-timezones?country=${country}`
@@ -13,6 +13,25 @@ export async function getZoneNames(country: string): Promise<Zone[]> {
     return data?.zones;
   } catch(e) {
     console.error("Error fetching timezones::", e);
+    return [];
+  }
+}
+
+export async function getZone(zone: string): Promise<any> {
+  const url = `https://worldtimeapi.org/api/timezone/${zone}`; 
+  console.log("Fetching zone: ", zone);
+  
+  try {
+    const response = await fetch(url);
+
+    if(!response.ok) {
+      console.log(response);
+      throw new Error("Error fetching zone");
+    }
+
+    return await response.json();
+  } catch(e) {
+    console.error("Error fetching timezone::", e);
     return [];
   }
 }
@@ -51,4 +70,16 @@ export function appendElements(
   toAppend: HTMLElement[]
 ) {
   toAppend.forEach(element => parent.appendChild(element));
+}
+
+export function removePrepend(toRemoveFrom: string) {
+  return toRemoveFrom
+            .replace("_", " ")
+            .replace("America/", "")
+            .replace("Asia/", "")
+            .replace("Europe/", "")
+            .replace("Indian/", "")
+            .replace("Africa/", "")
+            .replace("Pacific/", "")
+            .replace("Atlantic/", "");
 }

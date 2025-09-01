@@ -1,5 +1,5 @@
 export const config = {
-  runtime: "edge", // Use Edge Runtime, for ESM
+  runtime: "nodejs", // Use Edge Runtime, for ESM
 };
 
 export default async function handler(req: Request) {

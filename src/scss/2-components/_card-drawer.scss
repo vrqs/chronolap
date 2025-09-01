@@ -6,24 +6,59 @@
 @use "../0-abstracts/" as *;
 @use "../1-base/typography" as *;
 
-.card-drawer {
-  @include wh(100%, 400px, $max-w: col-width(6));
+.card-overlap {
+  @include wh(100%, auto, col-width(6), $min-h: 200px);
+  padding: 1rem;
   background-color: var(--color-background-card);
   border-radius: 1.5rem;
   overflow: hidden;
   box-shadow:
     0 0 3px rgba(18, 23, 24, 0.1),
     0 0 60px rgba(0, 125, 131, 0.1);
-  opacity: 0;
-  visibility: hidden;
-  cursor: pointer;
 
-  transform: translateY(80%);
   transition: all 220ms ease-out;
   @include pos($pos: relative, $z: 20);
 
-  &.open {
-    transform: translateY(0%);
+  .hours {
+    .hour-slot {
+      @include wh(100%, 40px);
+      background-color: var(--color-border-primary);
+      @include border(((l, r), 1px), white);
+
+      &.selected {
+        background-color: var(--color-text-secondary);
+      }
+    }
+  }
+
+  .timezones-container {
+    @include flex(column, $gap: .5rem);
+    margin-top: 1rem;
+  }
+
+  .timezone-container[data-state="loading"] {
+    @include wh(100%, 84px);
+    background-color: var(--color-text-tertiary);
+    border-radius: 1rem;
+    animation: loader 1s infinite;
+    transition: all 120ms;
+  }
+
+  .timezone-container[data-state="loaded"] {
+    display: none;
+  }
+}
+
+@keyframes loader {
+  0% {
+    opacity: .4;
+  }
+  
+  50% {
     opacity: 1;
+  }
+
+  100% {
+    opacity: .4;
   }
 }
