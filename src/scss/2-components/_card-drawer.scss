@@ -34,6 +34,14 @@
   .timezones-container {
     @include flex(column, $gap: .5rem);
     margin-top: 1rem;
+
+    &[data-loading="true"] {
+      @include wh(100%, 176px);
+      background-color: var(--color-text-tertiary);
+      border-radius: 1rem;
+      animation: loader 1s infinite;
+      transition: all 120ms;
+    }
   }
 
   .timezone-container[data-state="loading"] {

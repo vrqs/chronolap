@@ -9,12 +9,9 @@ import { getZone, createElement, appendElements, removePrepend } from "../util";
 
 class OverlapTimezone {
   private container!: HTMLElement;
-  private timezoneLoadingContainer!: HTMLElement;
   private country: string;
-  private zone: string;
-  private _zoneData!: {utc_offset: string};
+  private zone: any;
   private timeframe: [number, number];
-  private offset: any;
 
   constructor(
     container: HTMLElement,
@@ -29,37 +26,8 @@ class OverlapTimezone {
     this.init();
   }
 
-  set zoneData(data: {utc_offset: string}) {
-    this._zoneData = data;
-  }
-
-  get zoneData(): {utc_offset: string} {
-    return this._zoneData;
-  }
-
   private async init() {
-    this.setLoadingState(this.container);
-
-    try {
-      await this.getZoneData();
-    } catch(e) {
-      console.error("Error getting timezones overlap", e);
-    }
-
     this.mountUI(this.container);
-  }
-
-  private async getZoneData() {
-    let data;
-
-    try {
-      data = await getZone(this.zone);
-    } catch(e) {
-      console.error("Error fetching timezone details", e);
-      return;
-    }
-
-    this.zoneData = data;
   }
 
   private mountUI(container: HTMLElement) {
@@ -69,7 +37,7 @@ class OverlapTimezone {
       className: ["timezone-container"],
       attributes: {
         "data-country": this.country,
-        "data-timezone": this.zone,
+        "data-timezone": this.zone.timezone,
       }
     });
 
@@ -79,7 +47,7 @@ class OverlapTimezone {
     });
     
     const zone = createElement("p", {
-      textContent: `${removePrepend(this.zone)} – UTC ${this.zoneData.utc_offset}`,
+      textContent: `${removePrepend(this.zone.timezone)} – UTC ${this.zone.utc_offset}`,
       className: ["label"],
     });
 
@@ -98,21 +66,8 @@ class OverlapTimezone {
       );
     }
     
-    this.timezoneLoadingContainer.setAttribute("data-state", "loaded");
     appendElements(timezoneContainer, [country, zone, hoursWrapper]);
     container.appendChild(timezoneContainer);
-  }
-
-  private setLoadingState(container: HTMLElement) {
-    const timezoneLoadingContainer = createElement("div", {
-      className: ["timezone-container"],
-      attributes: {
-        "data-state": "loading"
-      }
-    });
-
-    container.appendChild(timezoneLoadingContainer);
-    this.timezoneLoadingContainer = timezoneLoadingContainer;
   }
 }
 

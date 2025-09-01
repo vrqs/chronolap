@@ -14,27 +14,15 @@ import OverlapCard from "./classes/OverlapCard";
 const inputsContainer = document.querySelector(".card-input") as HTMLDivElement;
 const timeframeContainer = document.querySelector("#group-timeframe") as HTMLDivElement;
 
-const overlapResultsContainer = document.querySelector(".overlap-results");
-const overlapResultsCard = document.querySelector<HTMLDivElement>(".card-drawer");
-
-const inputGroups = document.querySelectorAll<HTMLDivElement>(".input-group[data-input]");
-const countryInputs = document.querySelectorAll<HTMLInputElement>(".input-group[data-input] input");
 const actionSearch = document.querySelector<HTMLButtonElement>("[data-action='search']");
 
 const locations: number = 2;
 const countrySearchInstances: CountrySearch[] = [];
-let overlapResultsCardInstance: OverlapCard;
 
-let drawerOpen = false;
-
-function toggleDrawer() {
-  drawerOpen = !drawerOpen;
-  overlapResultsCard?.classList.toggle("open");
-
-  drawerOpen ?
-    overlapResultsCard?.addEventListener("click", toggleDrawer) :
-    overlapResultsCard?.removeEventListener("click", toggleDrawer);
-}
+const overlapResultsCardInstance = new OverlapCard(
+  document.querySelector("main") as HTMLElement,
+  countrySearchInstances as CountrySearch[]
+);
 
 function initUI() {
   for (let index = 0; index < locations; index++) {
@@ -45,28 +33,14 @@ function initUI() {
 }
 
 async function calculateTimeDiff() {
-
-  // countrySearchInstances.map(country => {
-  //   new OverlapCountry(
-  //     overlapResultsCardInstance as HTMLElement,
-  //     country.getData().country,
-  //     country.getData().zone,
-  //   );
-  // });
-
-  overlapResultsCardInstance = new OverlapCard(
-    document.querySelector("main")!,
-    countrySearchInstances
-  );
-
-  overlapResultsCardInstance.show();
+  overlapResultsCardInstance.show(countrySearchInstances as CountrySearch[]);
 }
 
 function init() {
   initUI();
 
   actionSearch?.addEventListener("click", e => {
-    calculateTimeDiff();
+    overlapResultsCardInstance.show(countrySearchInstances as CountrySearch[]);
   });
 }
 
