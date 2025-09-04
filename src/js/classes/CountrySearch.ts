@@ -141,6 +141,17 @@ class CountrySearch {
 
     container.insertBefore(inputGroup, insertBefore);
 
+    // Closes zoneList if it's open and click outside
+    document.addEventListener("pointerup", e => {
+      if(
+        zonesList &&
+        !zonesList.contains(e.target as Node) &&
+        e.target !== this.selectedZone
+      ) {
+        this.showZonesList = false;
+      }
+    });
+
     this.container = inputGroup;
     this.input = input;
     this.results = results;
@@ -170,30 +181,9 @@ class CountrySearch {
     this.input.value = "";
     this.input.focus();
     this.showZonesList = false;
-    this.resetSelectedZone()
-  }
-
-  private getCache(code?: string) {
-    const raw = localStorage.getItem("clCached") as string;
-    const cache = JSON.parse(raw);
-
-    if(cache) {
-      return code ? cache.find((item: any) => item.country === code) : cache;
-    }
-
-    return [];
-  }
-
-  private setCache(country: string, zones: Zone[]) {
-    const newItem = {
-      country: country,
-      timezones: zones
-    };
-
-    const cache = this.getCache();
-
-    cache.push(newItem);
-    localStorage.setItem("clCached", JSON.stringify(cache));
+    this.countryName = "";
+    this.zoneName = "";
+    this.resetSelectedZone();
   }
 
   private selectCountry(label: string, code: string) {

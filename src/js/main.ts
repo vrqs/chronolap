@@ -40,7 +40,9 @@ function init() {
   initUI();
 
   actionSearch?.addEventListener("click", e => {
-    overlapResultsCardInstance.show(countrySearchInstances as CountrySearch[]);
+    const shouldOpen = countrySearchInstances.every(location => location.countryName && location.zoneName !== "");
+    
+    shouldOpen && overlapResultsCardInstance.show(countrySearchInstances as CountrySearch[]);
   });
 }
 

@@ -20,19 +20,24 @@ export async function getZoneNames(country: string): Promise<Zone[]> {
 export async function getZone(zone: string): Promise<any> {
   const url = `https://worldtimeapi.org/api/timezone/${zone}`; 
   console.log("Fetching zone: ", zone);
-  
-  try {
-    const response = await fetch(url);
 
-    if(!response.ok) {
-      console.log(response);
-      throw new Error("Error fetching zone");
+  for(let attempt = 1; attempt <= 5; attempt++) {
+    try {
+      const response = await fetch(url);
+
+      if(!response.ok) {
+        throw new Error("Error fetching zone");
+      }
+
+      return await response.json();
+    } catch(e) {
+      console.error(`Error fetching timezone, will try again | Attempt: ${attempt}`);
+      if(attempt === 3) throw e;
+      await new Promise(resolve => setTimeout(
+        resolve,
+        attempt * 1000
+      ));
     }
-
-    return await response.json();
-  } catch(e) {
-    console.error("Error fetching timezone::", e);
-    return [];
   }
 }
 

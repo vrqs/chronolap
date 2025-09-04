@@ -55,8 +55,8 @@ class OverlapCard {
     );
 
     this.zonesData = await Promise.all(zonesData);
-
-    this.insertTimezoneUI();
+    
+    zonesData && this.insertTimezoneUI();
   }
 
   private async getZoneData(zone: string) {
@@ -79,6 +79,8 @@ class OverlapCard {
       const correspondingZone = this.zonesData.find(
         (zone: any) => zone.timezone === instance.zoneName
       );
+    
+      console.log(instance);
       
       new OverlapTimezone(this.timezonesContainer, instance.countryName, correspondingZone);
     });
