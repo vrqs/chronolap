@@ -21,7 +21,7 @@ class OverlapTimezone {
     this.container = container;
     this.country = country;
     this.zone = zone;
-    this.timeframe = [9, 17];
+    this.timeframe = [10, 22];
     
     this.init();
   }

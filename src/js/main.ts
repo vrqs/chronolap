@@ -8,8 +8,8 @@ import { Zone } from "./types";
 import Countries from "./data/iso-country-codes";
 import { getZoneNames, createElement } from "./util";
 
-import CountrySearch from "./classes/CountrySearch";
-import OverlapCard from "./classes/OverlapCard";
+import LocationSearch from "./classes/LocationSearch";
+import ResultsCard from "./classes/ResultsCard";
 
 const inputsContainer = document.querySelector(".card-input") as HTMLDivElement;
 const timeframeContainer = document.querySelector("#group-timeframe") as HTMLDivElement;
@@ -17,32 +17,28 @@ const timeframeContainer = document.querySelector("#group-timeframe") as HTMLDiv
 const actionSearch = document.querySelector<HTMLButtonElement>("[data-action='search']");
 
 const locations: number = 2;
-const countrySearchInstances: CountrySearch[] = [];
+const locationSearchInstances: LocationSearch[] = [];
 
-const overlapResultsCardInstance = new OverlapCard(
+const overlapResultsCardInstance = new ResultsCard(
   document.querySelector("main") as HTMLElement,
-  countrySearchInstances as CountrySearch[]
+  locationSearchInstances as LocationSearch[]
 );
 
 function initUI() {
   for (let index = 0; index < locations; index++) {
-    countrySearchInstances.push(
-      new CountrySearch(inputsContainer, timeframeContainer, index)
+    locationSearchInstances.push(
+      new LocationSearch(inputsContainer, timeframeContainer, index)
     );
   }
-}
-
-async function calculateTimeDiff() {
-  overlapResultsCardInstance.show(countrySearchInstances as CountrySearch[]);
 }
 
 function init() {
   initUI();
 
   actionSearch?.addEventListener("click", e => {
-    const shouldOpen = countrySearchInstances.every(location => location.countryName && location.zoneName !== "");
+    const shouldOpen = locationSearchInstances.every(location => location.countryName && location.zoneName !== "");
     
-    shouldOpen && overlapResultsCardInstance.show(countrySearchInstances as CountrySearch[]);
+    shouldOpen && overlapResultsCardInstance.show(locationSearchInstances as LocationSearch[]);
   });
 }
 

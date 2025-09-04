@@ -1,6 +1,6 @@
 /**
  * Class
- * CountrySearch
+ * LocationSearch
  */
 
 import Countries from "../data/iso-country-codes";
@@ -8,7 +8,7 @@ import Zones from "../data/timezones";
 import { getZoneNames, getZone, createElement, appendElements } from "../util";
 import { Zone } from "../types";
 
-class CountrySearch {
+class LocationSearch {
   private index: number;
   private _currentCountry!: string;
   private _clearable: boolean = false;
@@ -293,4 +293,4 @@ class CountrySearch {
   }
 }
 
-export default CountrySearch;
+export default LocationSearch;

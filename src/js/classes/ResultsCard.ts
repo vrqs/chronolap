@@ -1,17 +1,17 @@
 /**
  * Class
- * OverlapCard
+ * ResulstCard
  */
 
 import OverlapTimezone from "./OverlapTimezone";
-import CountrySearch from "./CountrySearch";
+import LocationSearch from "./LocationSearch";
 import { getZone, createElement, appendElements } from "../util";
 
-class OverlapCard {
+class ResulstCard {
   private appendTo: HTMLElement;
   private container!: HTMLElement;
   private timezonesContainer!: HTMLElement;
-  private _countryInstances!: CountrySearch[];
+  private _countryInstances!: LocationSearch[];
   private _zonesData!: any;
   private _isLoading!: boolean;
 
@@ -118,7 +118,7 @@ class OverlapCard {
     this.container = container;
   }
 
-  public show(countryInstances: CountrySearch[]) {
+  public show(countryInstances: LocationSearch[]) {
     this.countryInstances = countryInstances;
     this.isLoading = true;
     this.container.setAttribute("data-visible", "true");
@@ -130,4 +130,4 @@ class OverlapCard {
   }
 }
 
-export default OverlapCard;
+export default ResulstCard;
