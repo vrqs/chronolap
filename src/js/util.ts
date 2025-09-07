@@ -88,3 +88,19 @@ export function removePrepend(toRemoveFrom: string) {
             .replace("Pacific/", "")
             .replace("Atlantic/", "");
 }
+
+export function normalizeCountryName(name: string) {
+  return name.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase();
+}
+
+export function removeCountryNamePrepend(toRemoveFrom: string) {
+  return toRemoveFrom
+            .replace("_", " ")
+            .replace("America/", "")
+            .replace("Asia/", "")
+            .replace("Europe/", "")
+            .replace("Indian/", "")
+            .replace("Africa/", "")
+            .replace("Pacific/", "")
+            .replace("Atlantic/", "");
+}
